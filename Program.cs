@@ -1,2 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using Core.Rss;
+
+class Program
+{
+    static void Main()
+    {
+        string path = "RSS.xml";
+        RssFolder rootFolder = Core.Rss.Opml.ParseToDirectoryItems(path);
+    }
+}
