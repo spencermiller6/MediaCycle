@@ -81,6 +81,9 @@ namespace Core.Rss
                             Console.WriteLine($"Title: {item.Title.Text}");
                             Console.WriteLine($"Published Date: {item.PublishDate}");
                             Console.WriteLine($"Summary: {item.Summary.Text}");
+                            Console.WriteLine($"Link: {item.Id}");
+                            Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
+
                             Console.WriteLine();
                         }
                     }
@@ -93,6 +96,16 @@ namespace Core.Rss
                 {
                     Console.WriteLine($"XML error: {e.Message}");
                 }
+            }
+        }
+
+        public static string GetAuthors(SyndicationItem item)
+        {
+            switch (item.Authors.Count())
+            {
+                case 0: return "";
+                case 1: return item.Authors[0].Name;
+                default: return "Multiple authors";
             }
         }
     }
