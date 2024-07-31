@@ -6,5 +6,6 @@ class Program
     {
         string path = "RSS.xml";
         RssFolder rootFolder = Core.Rss.Opml.ParseToDirectoryItems(path);
+        rootFolder.Show();
     }
 }

@@ -34,14 +34,14 @@ namespace Core.Rss
 
                     if (string.IsNullOrEmpty(xmlUrl))
                     {
-                        // It's a folder
+                        // Folder
                         RssFolder subFolder = new RssFolder(title);
                         folder.Children.Add(subFolder);
                         ParseOutline(childNode, subFolder);
                     }
                     else
                     {
-                        // It's a channel
+                        // Channel
                         RssChannel channel = new RssChannel(title, xmlUrl);
                         folder.Children.Add(channel);
                     }
@@ -53,12 +53,47 @@ namespace Core.Rss
     public class RssChannel : DirectoryItem
     {
         public string Url;
-        public SyndicationFeed syndicationFeed;
+        public SyndicationFeed Feed;
 
         public RssChannel(string name, string url) : base(name)
         {
             Url = url;
-            syndicationFeed = new SyndicationFeed(Name, "", new Uri(Url));
+            Feed = new SyndicationFeed(Name, "", new Uri(Url));
+        }
+
+        public static void FetchRssFeed(string url)
+        {        
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    HttpResponseMessage response = client.GetAsync(url).Result;
+                    response.EnsureSuccessStatusCode();
+
+                    string responseBody = response.Content.ReadAsStringAsync().Result;
+                    using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
+                    {
+                        SyndicationFeed feed = SyndicationFeed.Load(reader);
+                        Console.WriteLine($"Title: {feed.Title.Text}");
+
+                        foreach (SyndicationItem item in feed.Items)
+                        {
+                            Console.WriteLine($"Title: {item.Title.Text}");
+                            Console.WriteLine($"Published Date: {item.PublishDate}");
+                            Console.WriteLine($"Summary: {item.Summary.Text}");
+                            Console.WriteLine();
+                        }
+                    }
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.WriteLine($"Request error: {e.Message}");
+                }
+                catch (XmlException e)
+                {
+                    Console.WriteLine($"XML error: {e.Message}");
+                }
+            }
         }
     }
 
@@ -69,6 +104,36 @@ namespace Core.Rss
         public RssFolder(string name) : base(name)
         {
             Children = new List<DirectoryItem>();
+        }
+
+        public void Show()
+        {
+            int index = 0;
+
+            foreach (DirectoryItem child in Children)
+            {
+                Console.WriteLine($"{index++}\t{child.Name}");
+            }
+            
+            try
+            {
+                int selection = int.Parse(Console.ReadLine());
+                if (selection >=0 && selection < Children.Count)
+                {
+                    if (Children[selection] is RssFolder directory)
+                    {
+                        directory.Show();
+                    }
+                    else if (Children[selection] is RssChannel channel)
+                    {
+                        RssChannel.FetchRssFeed(channel.Url);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("You must provide a valid selection.");
+            }
         }
     }
 
