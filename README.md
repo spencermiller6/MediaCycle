@@ -9,3 +9,9 @@ Queued media could be delivered via email, or perhaps through some sort of priva
 - Controlled aggregation levels (user specifies the degree to which they only want the top posts in their feed from the latest window)
 - Non-bottomless creator/content suggestions
 
+## ToDo
+
+- [ ] Support for config
+  - [ ] Options for what properties are shown when displaying a list of folders, sources, or articles
+- [ ] Proper CLI features / navigation
+  - [ ] Ability to edit/remove/rename a portion of your OPML
