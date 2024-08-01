@@ -15,3 +15,13 @@ Queued media could be delivered via email, or perhaps through some sort of priva
   - [ ] Options for what properties are shown when displaying a list of folders, sources, or articles
 - [ ] Proper CLI features / navigation
   - [ ] Ability to edit/remove/rename a portion of your OPML
+  - [ ] Open a folder to view contents vs. open a folder and view the aggregated feed
+- [ ] Tracking metrics
+  - [ ] Article viewed status, settable from a directory level
+  - [ ] Like/dislike
+  - [ ] All stored locally
+  - [ ] Can be turned off in settings/config
+- [ ] Support/donation
+  - [ ] Performing one-time or setting recurring reminders to donate to your favorite creaters/sources, payouts/ratios could be suggested per metrics
+- [ ] Website mode vs. reader mode
+- [ ] Offline support
