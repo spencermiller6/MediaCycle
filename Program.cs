@@ -1,4 +1,5 @@
 ﻿using Core.Rss;
+using ReleaseTime;
 
 public class Program
 {
@@ -10,9 +11,9 @@ public class Program
         rootFolder.Show();
     }
 
-    public static List<ReleaseTime> ReleaseTimes = new List<ReleaseTime>
+    public static List<ReleaseTime.ReleaseTime> ReleaseTimes = new List<ReleaseTime.ReleaseTime>
     {
-        new ReleaseTime(ReleaseTime.DaysOfWeek.EveryDay, 8, 0),
-        new ReleaseTime(ReleaseTime.DaysOfWeek.EveryDay, 17, 0)
+        new ReleaseTime.ReleaseTime(ReleaseTime.ReleaseTime.DaysOfWeek.EveryDay, 8, 0),
+        new ReleaseTime.ReleaseTime(ReleaseTime.ReleaseTime.DaysOfWeek.EveryDay, 17, 0)
     };
 }

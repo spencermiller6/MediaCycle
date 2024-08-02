@@ -1,7 +1,7 @@
 using System.Drawing.Text;
 using System.ServiceModel.Syndication;
 using System.Xml;
-ushort ReleaseTime
+using ReleaseTime;
 
 namespace Core.Rss
 {
@@ -76,7 +76,7 @@ namespace Core.Rss
                     {
                         SyndicationFeed feed = SyndicationFeed.Load(reader);
                         Console.WriteLine($"Title: {feed.Title.Text}");
-                        DateTime? releaseTime = ReleaseTime.NextReleaseTime();
+                        DateTime? releaseTime = ReleaseTime.ReleaseTime.NextReleaseTime();
                         Console.WriteLine($"Next Release Time: {releaseTime}");
 
                         foreach (SyndicationItem item in feed.Items)
