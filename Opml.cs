@@ -1,6 +1,7 @@
 using System.Drawing.Text;
 using System.ServiceModel.Syndication;
 using System.Xml;
+ushort ReleaseTime
 
 namespace Core.Rss
 {
