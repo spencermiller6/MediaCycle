@@ -46,24 +46,10 @@ public class ReleaseTime
         Minute = minute;
     }
 
-    public DateTime NextOccurrence(DateTime currentTime)
+    public DateTime OnDate(DateTime date)
     {
-        DateTime todaysOccurance = new DateTime
-        (
-            currentTime.Year,
-            currentTime.Month,
-            currentTime.Day,
-            Program.ReleaseTimes[0].Hour,
-            Program.ReleaseTimes[0].Minute,
-            0,
-            0,
-            currentTime.Kind
-        );
-
-        return todaysOccurance > currentTime ? todaysOccurance : todaysOccurance.AddDays(1);
+        return new DateTime(date.Year, date.Month, date.Day, Hour, Minute, 0, 0, date.Kind);
     }
-
-    public DateTime NextOccurrence() => NextOccurrence(DateTime.Now);
 
     public static DateTime? NextReleaseTime()
     {
@@ -72,14 +58,14 @@ public class ReleaseTime
             return null;
         }
 
-        DateTime currentTime = DateTime.Now;
-        DateTime nextReleaseTime = Program.ReleaseTimes.Last().NextOccurrence(currentTime);
+        DateTime today = DateTime.Now;
+        DateTime nextReleaseTime = Program.ReleaseTimes[0].OnDate(today).AddDays(1);
 
-        for (int i = Program.ReleaseTimes.Count - 2; i >= 0; i--)
+        for (int i = Program.ReleaseTimes.Count - 1; i >= 0; i--)
         {
-            DateTime releaseTime = Program.ReleaseTimes[i].NextOccurrence(currentTime);
+            DateTime releaseTime = Program.ReleaseTimes[i].OnDate(today);
 
-            if (releaseTime < currentTime)
+            if (releaseTime < today)
             {
                 break;
             }
