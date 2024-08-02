@@ -75,7 +75,7 @@ namespace Core.Rss
                     {
                         SyndicationFeed feed = SyndicationFeed.Load(reader);
                         Console.WriteLine($"Title: {feed.Title.Text}");
-                        DateTime? releaseTime = Program.NextReleaseTime();
+                        DateTime? releaseTime = ReleaseTime.NextReleaseTime();
                         Console.WriteLine($"Next Release Time: {releaseTime}");
 
                         foreach (SyndicationItem item in feed.Items)
