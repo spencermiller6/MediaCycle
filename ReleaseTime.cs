@@ -24,7 +24,7 @@ namespace ReleaseTime
 
         public ReleaseTime(DaysOfWeek days, int hour, int minute)
         {
-            if (hour < 1 || hour > 24)
+            if (hour < 0 || hour > 23)
             {
                 throw new ArgumentOutOfRangeException(nameof(hour), "Hour must be between 1 and 24.");
             }
