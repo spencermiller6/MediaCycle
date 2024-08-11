@@ -1,9 +1,8 @@
 using System.Drawing.Text;
 using System.ServiceModel.Syndication;
 using System.Xml;
-using ReleaseTime;
 
-namespace Core.Rss
+namespace MediaCycle.Core
 {
     public static class Opml
     {
@@ -76,7 +75,7 @@ namespace Core.Rss
                     {
                         SyndicationFeed feed = SyndicationFeed.Load(reader);
                         Console.WriteLine($"Title: {feed.Title.Text}");
-                        DateTime? releaseTime = ReleaseTime.ReleaseTime.NextReleaseTime();
+                        DateTime? releaseTime = ReleaseTime.NextReleaseTime();
                         Console.WriteLine($"Next Release Time: {releaseTime}");
 
                         foreach (SyndicationItem item in feed.Items)

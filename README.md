@@ -11,6 +11,7 @@ Queued media could be delivered via email, or perhaps through some sort of priva
 
 ## ToDo
 
+- [ ] Reorganize classes/namespaces because they are very goofy currently
 - [ ] Support for config
   - [ ] Options for what properties are shown when displaying a list of folders, sources, or articles
 - [ ] Proper CLI features / navigation
