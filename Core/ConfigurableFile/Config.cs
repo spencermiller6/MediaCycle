@@ -1,41 +1,43 @@
 using System.Xml.Linq;
 using static MediaCycle.Core.ReleaseTime;
 
-namespace MediaCycle.Core
+namespace MediaCycle.Core.ConfigurableFile
 {
-    public class ConfigManager
+    public class Config : ConfigurableFile
     {
-        private static ConfigManager? _instance;
+        private static Config? _instance;
         public string SubscriptionsFilePath { get; private set; }
         public List<ReleaseTime> ReleaseTimes { get; private set; }
 
-        private ConfigManager()
+        private Config()
         {
-            XDocument configFile = GetConfig();
+            XDocument configFile = LoadOrCreate();
             
             SubscriptionsFilePath = LoadSubscriptionsFilePath(configFile);
             ReleaseTimes = LoadReleaseTimes(configFile);
         }
 
-        public static ConfigManager Instance()
+        public XDocument LoadOrCreate()
         {
-            if (_instance == null)
-            {
-                _instance = new ConfigManager();
-            }
-            return _instance;
-        }
-
-        private static XDocument GetConfig()
-        {
-            string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".config/mediacycle/config.xml");
+            string filePath = Path.Combine(ConfigurableFile.Directory, "config.xml");
 
             if (!File.Exists(filePath))
             {
-                throw new FileNotFoundException("Config file not found.", filePath);
+                XDocument doc = new XDocument(new XElement("ReleaseTimes"));
+                doc.Save("config.xml");
             }
 
             return XDocument.Load(filePath);
+        }
+
+        public static Config Instance()
+        {
+            if (_instance == null)
+            {
+                _instance = new Config();
+            }
+
+            return _instance;
         }
 
         public static string LoadSubscriptionsFilePath(XDocument doc)
