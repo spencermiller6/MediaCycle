@@ -78,6 +78,8 @@ namespace MediaCycle.Core
                         DateTime? releaseTime = ReleaseTime.NextReleaseTime();
                         Console.WriteLine($"Next Release Time: {releaseTime}");
 
+                        int index = 0;
+
                         foreach (SyndicationItem item in feed.Items)
                         {
                             if (item.PublishDate > releaseTime)
@@ -85,13 +87,15 @@ namespace MediaCycle.Core
                                 break;
                             }
 
+                            Console.WriteLine(index);
                             Console.WriteLine($"Title: {item.Title.Text}");
                             Console.WriteLine($"Published Date: {item.PublishDate}");
                             Console.WriteLine($"Summary: {item.Summary.Text}");
                             Console.WriteLine($"Link: {item.Id}");
                             Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
-
                             Console.WriteLine();
+
+                            index++;
                         }
                     }
                 }

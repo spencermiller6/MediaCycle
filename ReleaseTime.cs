@@ -1,3 +1,5 @@
+using MediaCycle.Core.ConfigurableFile;
+
 namespace MediaCycle.Core
 {
     public class ReleaseTime
@@ -46,17 +48,17 @@ namespace MediaCycle.Core
 
         public static DateTime? NextReleaseTime()
         {
-            if (ConfigManager.Instance().ReleaseTimes.Count == 0)
+            if (Config.Instance().ReleaseTimes.Count == 0)
             {
                 return null;
             }
 
             DateTime today = DateTime.Now;
-            DateTime nextReleaseTime = ConfigManager.Instance().ReleaseTimes[0].OnDate(today).AddDays(1);
+            DateTime nextReleaseTime = Config.Instance().ReleaseTimes[0].OnDate(today).AddDays(1);
 
-            for (int i = ConfigManager.Instance().ReleaseTimes.Count - 1; i >= 0; i--)
+            for (int i = Config.Instance().ReleaseTimes.Count - 1; i >= 0; i--)
             {
-                DateTime releaseTime = ConfigManager.Instance().ReleaseTimes[i].OnDate(today);
+                DateTime releaseTime = Config.Instance().ReleaseTimes[i].OnDate(today);
 
                 if (releaseTime < today)
                 {
