@@ -73,7 +73,7 @@ namespace MediaCycle.Core
 
         public SyndicationFeed Feed()
         {
-            if (LastFetch < ReleaseTime.NextReleaseTime())
+            if (LastFetch is null || LastFetch < ReleaseTime.NextReleaseTime())
             {
                 FetchRssFeed();
             }
