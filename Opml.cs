@@ -1,6 +1,7 @@
 using System.Drawing.Text;
 using System.ServiceModel.Syndication;
 using System.Xml;
+using MediaCycle.Core.ConfigurableFile;
 
 namespace MediaCycle.Core
 {
@@ -35,14 +36,22 @@ namespace MediaCycle.Core
                     if (string.IsNullOrEmpty(xmlUrl))
                     {
                         // Folder
-                        RssFolder subFolder = new RssFolder(title);
+                        RssFolder subFolder = new RssFolder(title)
+                        {
+                            Parent = folder
+                        };
+
                         folder.Children.Add(subFolder);
                         ParseOutline(childNode, subFolder);
                     }
                     else
                     {
                         // Channel
-                        RssChannel channel = new RssChannel(title, xmlUrl);
+                        RssChannel channel = new RssChannel(title, xmlUrl)
+                        {
+                            Parent = folder
+                        };
+                        
                         folder.Children.Add(channel);
                     }
                 }
@@ -61,52 +70,50 @@ namespace MediaCycle.Core
             Feed = new SyndicationFeed(Name, "", new Uri(Url));
         }
 
-        public static void FetchRssFeed(string url)
+        public static SyndicationFeed FetchRssFeed(string url)
         {        
             using (HttpClient client = new HttpClient())
             {
-                try
+                HttpResponseMessage response = client.GetAsync(url).Result;
+                response.EnsureSuccessStatusCode();
+
+                string responseBody = response.Content.ReadAsStringAsync().Result;
+                using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
                 {
-                    HttpResponseMessage response = client.GetAsync(url).Result;
-                    response.EnsureSuccessStatusCode();
-
-                    string responseBody = response.Content.ReadAsStringAsync().Result;
-                    using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
-                    {
-                        SyndicationFeed feed = SyndicationFeed.Load(reader);
-                        Console.WriteLine($"Title: {feed.Title.Text}");
-                        DateTime? releaseTime = ReleaseTime.NextReleaseTime();
-                        Console.WriteLine($"Next Release Time: {releaseTime}");
-
-                        int index = 0;
-
-                        foreach (SyndicationItem item in feed.Items)
-                        {
-                            if (item.PublishDate > releaseTime)
-                            {
-                                break;
-                            }
-
-                            Console.WriteLine(index);
-                            Console.WriteLine($"Title: {item.Title.Text}");
-                            Console.WriteLine($"Published Date: {item.PublishDate}");
-                            Console.WriteLine($"Summary: {item.Summary.Text}");
-                            Console.WriteLine($"Link: {item.Id}");
-                            Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
-                            Console.WriteLine();
-
-                            index++;
-                        }
-                    }
+                    return SyndicationFeed.Load(reader);
                 }
-                catch (HttpRequestException e)
+            }
+        }
+
+        public void Show()
+        {
+            if (Feed is null)
+            {
+                Feed = FetchRssFeed(Url);
+            }
+
+            DateTime? releaseTime = ReleaseTime.NextReleaseTime();
+
+            Console.WriteLine($"{-1}\t<- {Parent.Name}");
+            Console.WriteLine($"Title: {Feed.Title.Text}");
+            Console.WriteLine($"Next Release Time: {releaseTime}");
+
+            int index = 0;
+
+            foreach (SyndicationItem item in Feed.Items)
+            {
+                if (item.PublishDate > releaseTime)
                 {
-                    Console.WriteLine($"Request error: {e.Message}");
+                    break;
                 }
-                catch (XmlException e)
-                {
-                    Console.WriteLine($"XML error: {e.Message}");
-                }
+
+                Console.WriteLine(index++);
+                Console.WriteLine($"Title: {item.Title.Text}");
+                Console.WriteLine($"Published Date: {item.PublishDate}");
+                Console.WriteLine($"Summary: {item.Summary.Text}");
+                Console.WriteLine($"Link: {item.Id}");
+                Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
+                Console.WriteLine();
             }
         }
 
@@ -123,16 +130,32 @@ namespace MediaCycle.Core
 
     public class RssFolder : DirectoryItem
     {
-        public List<DirectoryItem> Children; 
+        public List<DirectoryItem> Children;
+        private static RssFolder? _root;
         
         public RssFolder(string name) : base(name)
         {
             Children = new List<DirectoryItem>();
         }
 
+        public static RssFolder Root()
+        {
+            if (_root == null)
+            {
+                _root = Opml.ParseToDirectoryItems(Config.Instance().SubscriptionsFilePath);
+            }
+
+            return _root;
+        }
+
         public void Show()
         {
             int index = 0;
+
+            if (Parent is not null)
+            {
+                Console.WriteLine($"{-1}\t<- {Parent.Name}");
+            }
 
             foreach (DirectoryItem child in Children)
             {
@@ -142,7 +165,12 @@ namespace MediaCycle.Core
             try
             {
                 int selection = int.Parse(Console.ReadLine());
-                if (selection >=0 && selection < Children.Count)
+
+                if (selection == -1)
+                {
+                    Parent.Show();
+                }
+                if (selection >= 0 && selection < Children.Count)
                 {
                     if (Children[selection] is RssFolder directory)
                     {
@@ -150,7 +178,7 @@ namespace MediaCycle.Core
                     }
                     else if (Children[selection] is RssChannel channel)
                     {
-                        RssChannel.FetchRssFeed(channel.Url);
+                        channel.Show();
                     }
                 }
             }
@@ -164,6 +192,7 @@ namespace MediaCycle.Core
     public abstract class DirectoryItem
     {
         public string Name;
+        public RssFolder? Parent;
 
         public DirectoryItem(string name)
         {
