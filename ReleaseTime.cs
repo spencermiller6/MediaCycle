@@ -79,10 +79,10 @@ namespace MediaCycle.Core
             return (DateTime)_nextReleaseTime;
         }
 
-        public DateTime PreviousReleaseTime
-        {
+        // public DateTime PreviousReleaseTime
+        // {
 
-        }
+        // }
 
         // I need to make two methods, NextReleaseTime and PreviousReleaseTime, that take in an int offset to get a particular index
         // Or maybe have a list of previous ones that I prepend to, and a singular one for next
