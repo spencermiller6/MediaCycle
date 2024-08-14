@@ -61,25 +61,37 @@ namespace MediaCycle.Core
 
     public class RssChannel : DirectoryItem
     {
+        private SyndicationFeed _feed;
         public string Url;
-        public SyndicationFeed Feed;
+        public DateTime? LastFetch;
 
         public RssChannel(string name, string url) : base(name)
         {
             Url = url;
-            Feed = new SyndicationFeed(Name, "", new Uri(Url));
+            _feed = new SyndicationFeed(Name, "", new Uri(Url));
         }
 
-        public static SyndicationFeed FetchRssFeed(string url)
-        {        
+        public SyndicationFeed Feed()
+        {
+            if (LastFetch < ReleaseTime.NextReleaseTime())
+            {
+                FetchRssFeed();
+            }
+
+            return _feed;
+        }
+
+        public SyndicationFeed FetchRssFeed()
+        {
             using (HttpClient client = new HttpClient())
             {
-                HttpResponseMessage response = client.GetAsync(url).Result;
+                HttpResponseMessage response = client.GetAsync(Url).Result;
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = response.Content.ReadAsStringAsync().Result;
                 using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
                 {
+                    LastFetch = DateTime.Now;
                     return SyndicationFeed.Load(reader);
                 }
             }

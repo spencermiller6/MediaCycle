@@ -46,21 +46,15 @@ namespace MediaCycle.Cli.Navigation
         }
 
         static void ShowFeed(RssChannel channel)
-        {
-            if (channel.Feed is null)
-            {
-                channel.Feed = RssChannel.FetchRssFeed(channel.Url);
-            }
-
-            DateTime? releaseTime = ReleaseTime.NextReleaseTime();
+        {DateTime? releaseTime = ReleaseTime.NextReleaseTime();
 
             Console.WriteLine($"{-1}\t<- {channel.Parent.Name}");
-            Console.WriteLine($"Title: {channel.Feed.Title.Text}");
+            Console.WriteLine($"Title: {channel.Feed().Title.Text}");
             Console.WriteLine($"Next Release Time: {releaseTime}");
 
             int index = 0;
 
-            foreach (SyndicationItem item in channel.Feed.Items)
+            foreach (SyndicationItem item in channel.Feed().Items)
             {
                 if (item.PublishDate > releaseTime)
                 {
