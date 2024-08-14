@@ -1,10 +1,10 @@
 ﻿using MediaCycle.Core;
-using MediaCycle.Core.ConfigurableFile;
+using MediaCycle.Cli.Navigation;
 
 public class Program
 {
     static void Main()
     {
-        RssFolder.Root().Show();
+        Navigation.ShowFolder(RssFolder.Root());
     }
 }

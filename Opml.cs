@@ -85,38 +85,6 @@ namespace MediaCycle.Core
             }
         }
 
-        public void Show()
-        {
-            if (Feed is null)
-            {
-                Feed = FetchRssFeed(Url);
-            }
-
-            DateTime? releaseTime = ReleaseTime.NextReleaseTime();
-
-            Console.WriteLine($"{-1}\t<- {Parent.Name}");
-            Console.WriteLine($"Title: {Feed.Title.Text}");
-            Console.WriteLine($"Next Release Time: {releaseTime}");
-
-            int index = 0;
-
-            foreach (SyndicationItem item in Feed.Items)
-            {
-                if (item.PublishDate > releaseTime)
-                {
-                    break;
-                }
-
-                Console.WriteLine(index++);
-                Console.WriteLine($"Title: {item.Title.Text}");
-                Console.WriteLine($"Published Date: {item.PublishDate}");
-                Console.WriteLine($"Summary: {item.Summary.Text}");
-                Console.WriteLine($"Link: {item.Id}");
-                Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
-                Console.WriteLine();
-            }
-        }
-
         public static string GetAuthors(SyndicationItem item)
         {
             switch (item.Authors.Count())
@@ -146,46 +114,6 @@ namespace MediaCycle.Core
             }
 
             return _root;
-        }
-
-        public void Show()
-        {
-            int index = 0;
-
-            if (Parent is not null)
-            {
-                Console.WriteLine($"{-1}\t<- {Parent.Name}");
-            }
-
-            foreach (DirectoryItem child in Children)
-            {
-                Console.WriteLine($"{index++}\t{child.Name}");
-            }
-            
-            try
-            {
-                int selection = int.Parse(Console.ReadLine());
-
-                if (selection == -1)
-                {
-                    Parent.Show();
-                }
-                if (selection >= 0 && selection < Children.Count)
-                {
-                    if (Children[selection] is RssFolder directory)
-                    {
-                        directory.Show();
-                    }
-                    else if (Children[selection] is RssChannel channel)
-                    {
-                        channel.Show();
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine("You must provide a valid selection.");
-            }
         }
     }
 
