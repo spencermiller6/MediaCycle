@@ -44,40 +44,5 @@ namespace MediaCycle.Cli.Navigation
                 Console.WriteLine("You must provide a valid selection.");
             }
         }
-
-        static void ShowFeed(RssChannel channel)
-        {
-            DateTime? releaseTime = ReleaseTime.NextReleaseTime();
-
-            Console.WriteLine($"Title: {channel.Feed().Title.Text}");
-            Console.WriteLine($"Next Release Time: {releaseTime}");
-            Console.WriteLine();
-            
-            Console.WriteLine($"{-1}\t<- {channel.Parent.Name}");
-            Console.WriteLine();
-
-            int index = 0;
-
-            foreach (SyndicationItem item in channel.Feed().Items)
-            {
-                if (item.PublishDate > releaseTime)
-                {
-                    break;
-                }
-
-                Console.WriteLine(index++);
-                Console.WriteLine($"Title: {item.Title.Text}");
-                Console.WriteLine($"Published Date: {item.PublishDate}");
-                Console.WriteLine($"Summary: {item.Summary.Text}");
-                Console.WriteLine($"Link: {item.Id}");
-                Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
-                Console.WriteLine();
-            }
-        }
-        
-        static void ShowFeedsFromFolder(RssFolder folder)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
