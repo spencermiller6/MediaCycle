@@ -4,19 +4,14 @@ namespace MediaCycle.Cli;
 
 public class CommandFactory
 {
-    public static ICommand CreateCommand(string commandName)
+    public static Command CreateCommand(string commandName, List<string> arguments, List<char> shortOptions, List<string> longOptions)
     {
-        ICommand command;
         switch (commandName)
         {
             case "feed":
-                command = new Feed();
-                break;
+                return new FeedCommand(arguments, shortOptions, longOptions);
             default:
-                throw new Exception($"\"{commandName}\" not a recognized command");
+                throw new Exception($"\"{commandName}\" is not a recognized command");
         }
-
-        command.SetArguments();
-        command.SetOptions();
     }
 }

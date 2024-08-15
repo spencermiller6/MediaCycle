@@ -1,20 +1,21 @@
 using System;
+using System.Collections.Immutable;
 using System.ServiceModel.Syndication;
 using MediaCycle.Core;
 
 namespace MediaCycle.Cli;
 
-public class Feed : ICommand
+public class FeedCommand : Command
 {
-    public string Name => "feed";
+    public override string Name => "feed";
 
-    public string HelpText => "Show the feed of all channels within the current scope";
+    public override string HelpText => "Show the feed of all channels within the current scope";
 
-    public List<object> Arguments => _arguments;
+    public override List<IArgument> Arguments => _arguments;
 
-    public List<IOption> Options => _options;
+    public override List<Option> Options => _options;
 
-    public void Execute()
+    public override void Execute()
     {
         ShowFeedsFromFolder(Cli.Pwd());
     }
@@ -61,6 +62,18 @@ public class Feed : ICommand
         }
     }
 
-    private List<object> _arguments = new List<object>();
-    private List<IOption> _options = new List<IOption>();
+    public override void SetArguments(List<string> arguments)
+    {
+        if (arguments.Any())
+        {
+            throw new Exception($"Command \"{Name}\" does not accept any arguments");
+        }
+    }
+
+    private List<IArgument> _arguments = new List<IArgument>();
+    private List<Option> _options = new List<Option>();
+
+    public FeedCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
+    {
+    }
 }

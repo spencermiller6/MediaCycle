@@ -19,13 +19,13 @@ public static class Cli
 
     public static void ParseInput(string input)
     {
-        string? commandName;
+        string? name;
         List<char> shortOptions = new List<char>();
         List<string> longOptions = new List<string>();
         List<string> arguments = new List<string>();
 
         var words = input.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-        commandName = words[0];
+        name = words[0];
 
         for (int i = 1; i < words.Length; i++)
         {
@@ -47,6 +47,8 @@ public static class Cli
                 arguments.Add(word);
             }
         }
+
+        CommandFactory.CreateCommand(name, arguments, shortOptions, longOptions);
     }
 
     public static RssFolder Pwd()
