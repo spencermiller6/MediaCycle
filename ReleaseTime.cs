@@ -23,11 +23,10 @@ namespace MediaCycle.Core
         public DaysOfWeek Days;
         public int Hour;
         public int Minute;
-
         public string? Name; //To-Do
 
-        private static DateTime? _nextReleaseTime;
-        private static List<DateTime> _pastReleaseTimes;
+        // private static DateTime? _nextReleaseTime;
+        private static List<DateTime> _pastReleaseTimes = new List<DateTime>();
 
         public ReleaseTime(DaysOfWeek days, int hour, int minute)
         {
@@ -44,74 +43,100 @@ namespace MediaCycle.Core
             Days = days;
             Hour = hour;
             Minute = minute;
-            _pastReleaseTimes = new List<DateTime>();
         }
 
-        public DateTime OnDate(DateTime date)
+        public static DaysOfWeek DaysOfWeekFromDate(DateTime dateTime)
         {
-            return new DateTime(date.Year, date.Month, date.Day, Hour, Minute, 0, 0, date.Kind);
+            return (DaysOfWeek)(1 << (int)dateTime.DayOfWeek);
         }
 
-        public DateTime NextReleaseTime(DateTime lowerBound)
+        public static bool AnyActiveReleaseTimes()
         {
-            if (_nextReleaseTime is null || _nextReleaseTime < DateTime.Now)
+            foreach (ReleaseTime releaseTime in Config.Instance().ReleaseTimes)
             {
-                DateTime? nextReleaseTime = null;
-
-                for (int i = 0; i < Config.Instance().ReleaseTimes.Count; i++)
+                if (releaseTime.Days != DaysOfWeek.None)
                 {
-                    DateTime releaseTime = Config.Instance().ReleaseTimes[i].OnDate(lowerBound);
-
-                    if (releaseTime > lowerBound && (nextReleaseTime is null || releaseTime > nextReleaseTime))
-                    {
-                        nextReleaseTime = releaseTime;
-                    }
+                    return true;
                 }
-
-                if (nextReleaseTime is null)
-                {
-                    NextReleaseTime(lowerBound.AddDays(1));
-                }
-                
-                _nextReleaseTime = nextReleaseTime;
-            }
-            
-            return (DateTime)_nextReleaseTime;
-        }
-
-        // public DateTime PreviousReleaseTime
-        // {
-
-        // }
-
-        // I need to make two methods, NextReleaseTime and PreviousReleaseTime, that take in an int offset to get a particular index
-        // Or maybe have a list of previous ones that I prepend to, and a singular one for next
-        // They also have to check every single releasetime in config
-        public static DateTime? NextReleaseTime()
-        {
-            if (Config.Instance().ReleaseTimes.Count == 0)
-            {
-                return null;
             }
 
-            DateTime today = DateTime.Now;
-            DateTime nextReleaseTime = Config.Instance().ReleaseTimes[0].OnDate(today).AddDays(1);
+            return false;
+        }
 
-            for (int i = Config.Instance().ReleaseTimes.Count - 1; i >= 0; i--)
+        public DateTime? OnDate(DateTime date)
+        {
+            DaysOfWeek dayOfWeek = DaysOfWeekFromDate(date);
+            if ((dayOfWeek & Days) == dayOfWeek)
             {
-                DateTime releaseTime = Config.Instance().ReleaseTimes[i].OnDate(today);
+                return new DateTime(date.Year, date.Month, date.Day, Hour, Minute, 0, 0, date.Kind);
+            }
 
-                if (releaseTime < today)
-                {
-                    break;
-                }
-                else
+            return null;
+        }
+
+        public static DateTime EarliestReleaseTimeAfterDate(DateTime dateToCheck, DateTime lowerBound)
+        {
+            DateTime? nextReleaseTime = null;
+
+            for (int i = 0; i < Config.Instance().ReleaseTimes.Count; i++)
+            {
+                DateTime? releaseTime = Config.Instance().ReleaseTimes[i].OnDate(dateToCheck);
+
+                if (releaseTime > lowerBound && (nextReleaseTime is null || releaseTime < nextReleaseTime))
                 {
                     nextReleaseTime = releaseTime;
                 }
             }
 
-            return nextReleaseTime;
+            nextReleaseTime ??= EarliestReleaseTimeAfterDate(dateToCheck.AddDays(1), lowerBound);
+            return (DateTime)nextReleaseTime;
         }
+
+        public static DateTime EarliestReleaseTimeAfterDate(DateTime lowerBound) => LatestReleaseTimeBeforeDate(lowerBound, lowerBound);
+
+        public static DateTime LatestReleaseTimeBeforeDate(DateTime dateToCheck, DateTime upperBound)
+        {
+            DateTime? previousReleaseTime = null;
+
+            for (int i = 0; i < Config.Instance().ReleaseTimes.Count; i++)
+            {
+                DateTime? releaseTime = Config.Instance().ReleaseTimes[i].OnDate(dateToCheck);
+
+                if (releaseTime < upperBound && (previousReleaseTime is null || releaseTime > previousReleaseTime))
+                {
+                    previousReleaseTime = releaseTime;
+                }
+            }
+
+            previousReleaseTime ??= LatestReleaseTimeBeforeDate(dateToCheck.AddDays(-1), upperBound);
+            return (DateTime)previousReleaseTime;
+        }
+
+        public static DateTime LatestReleaseTimeBeforeDate(DateTime upperBound) => LatestReleaseTimeBeforeDate(upperBound, upperBound);
+
+        public static DateTime PastReleaseTimeAtIndex(int index)
+        {
+            DateTime previousReleaseTime = LatestReleaseTimeBeforeDate(DateTime.Now);
+
+            if (_pastReleaseTimes.Count() == 0)
+            {
+                _pastReleaseTimes.Add(previousReleaseTime);
+            }
+
+            while (_pastReleaseTimes[0] != previousReleaseTime)
+            {
+                _pastReleaseTimes.Insert(0, EarliestReleaseTimeAfterDate(_pastReleaseTimes.First()));
+            }
+
+            while (index > _pastReleaseTimes.Count() - 1)
+            {
+                _pastReleaseTimes.Add(LatestReleaseTimeBeforeDate(_pastReleaseTimes.Last()));
+            }
+
+            return _pastReleaseTimes[index];
+        }
+
+        public static DateTime NextReleaseTime() => EarliestReleaseTimeAfterDate(DateTime.Now);
     }
+    // To-Do: validate that there are active release times before assuming there are
 }

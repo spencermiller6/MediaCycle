@@ -81,7 +81,7 @@ namespace MediaCycle.Core
             return _feed;
         }
 
-        public SyndicationFeed FetchRssFeed()
+        public void FetchRssFeed()
         {
             using (HttpClient client = new HttpClient())
             {
@@ -92,7 +92,7 @@ namespace MediaCycle.Core
                 using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
                 {
                     LastFetch = DateTime.Now;
-                    return SyndicationFeed.Load(reader);
+                    _feed = SyndicationFeed.Load(reader);
                 }
             }
         }

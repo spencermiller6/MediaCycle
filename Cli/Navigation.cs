@@ -46,11 +46,15 @@ namespace MediaCycle.Cli.Navigation
         }
 
         static void ShowFeed(RssChannel channel)
-        {DateTime? releaseTime = ReleaseTime.NextReleaseTime();
+        {
+            DateTime? releaseTime = ReleaseTime.NextReleaseTime();
 
-            Console.WriteLine($"{-1}\t<- {channel.Parent.Name}");
             Console.WriteLine($"Title: {channel.Feed().Title.Text}");
             Console.WriteLine($"Next Release Time: {releaseTime}");
+            Console.WriteLine();
+            
+            Console.WriteLine($"{-1}\t<- {channel.Parent.Name}");
+            Console.WriteLine();
 
             int index = 0;
 
