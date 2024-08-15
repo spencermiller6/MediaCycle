@@ -8,8 +8,12 @@ public class CommandFactory
     {
         switch (commandName)
         {
+            case "cd":
+                return new CdCommand(arguments, shortOptions, longOptions);
             case "feed":
                 return new FeedCommand(arguments, shortOptions, longOptions);
+            case "ls":
+                return new LsCommand(arguments, shortOptions, longOptions);
             default:
                 throw new Exception($"\"{commandName}\" is not a recognized command");
         }

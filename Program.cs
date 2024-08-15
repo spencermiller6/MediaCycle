@@ -1,10 +1,9 @@
-﻿using MediaCycle.Core;
-using MediaCycle.Cli.Navigation;
+﻿using MediaCycle.Cli;
 
 public class Program
 {
     static void Main()
     {
-        Navigation.ShowFolder(RssFolder.Root());
+        Cli.Start();
     }
 }

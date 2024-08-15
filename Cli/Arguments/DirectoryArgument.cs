@@ -9,7 +9,7 @@ public class DirectoryArgument : IArgument
 
     public DirectoryArgument()
     {
-
+        
     }
 
     private DirectoryItem _value;

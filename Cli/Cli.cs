@@ -12,19 +12,27 @@ public static class Cli
 
             if (!string.IsNullOrWhiteSpace(input))
             {
-                ParseInput(input);
+                try
+                {
+                    Command command = ParseInput(input);
+                    command.Execute();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
         }
     }
 
-    public static void ParseInput(string input)
+    public static Command ParseInput(string input)
     {
         string? name;
         List<char> shortOptions = new List<char>();
         List<string> longOptions = new List<string>();
         List<string> arguments = new List<string>();
 
-        var words = input.Split([' '], StringSplitOptions.RemoveEmptyEntries);
+        string[] words = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
         name = words[0];
 
         for (int i = 1; i < words.Length; i++)
@@ -48,17 +56,23 @@ public static class Cli
             }
         }
 
-        CommandFactory.CreateCommand(name, arguments, shortOptions, longOptions);
+        return CommandFactory.CreateCommand(name, arguments, shortOptions, longOptions);
     }
 
-    public static RssFolder Pwd()
+    public static RssFolder Pwd
     {
-        if (_pwd is null)
+        get
         {
-            _pwd = RssFolder.Root();
+            if (_pwd is null)
+            {
+                _pwd = RssFolder.Root();
+            }
+            return _pwd;
         }
-
-        return _pwd;
+        set
+        {
+            _pwd = value;
+        }
     }
 
     private static RssFolder? _pwd;
