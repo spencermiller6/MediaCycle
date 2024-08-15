@@ -21,11 +21,11 @@ public class Feed : ICommand
         
     static void ShowFeedsFromFolder(RssFolder parentFolder)
     {
-        foreach (RssFolder childFolder in parentFolder.Children)
+        foreach (RssFolder childFolder in parentFolder.Folders)
         {
 
         }
-        foreach (RssChannel channel in parentFolder.Children)
+        foreach (RssChannel channel in parentFolder.Channels)
         {
             
         }

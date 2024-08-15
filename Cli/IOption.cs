@@ -4,7 +4,7 @@ namespace MediaCycle.Cli;
 
 public interface IOption
 {
-    string ShortName { get; }
+    char ShortName { get; }
     string LongName { get; }
     string HelpText { get; }
     bool IsSet { get; }

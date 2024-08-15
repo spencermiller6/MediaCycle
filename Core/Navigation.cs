@@ -55,12 +55,14 @@ namespace MediaCycle.Core
 
     public class RssFolder : DirectoryItem
     {
-        public List<DirectoryItem> Children;
+        public List<RssFolder> Folders;
+        public List<RssChannel> Channels;
         private static RssFolder? _root;
         
         public RssFolder(string name) : base(name)
         {
-            Children = new List<DirectoryItem>();
+            Folders = new List<RssFolder>();
+            Channels = new List<RssChannel>();
         }
 
         public static RssFolder Root()

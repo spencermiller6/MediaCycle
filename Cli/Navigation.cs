@@ -14,7 +14,12 @@ namespace MediaCycle.Cli.Navigation
                 Console.WriteLine($"{-1}\t<- {folder.Parent.Name}");
             }
 
-            foreach (DirectoryItem child in folder.Children)
+            foreach (DirectoryItem child in folder.Folders)
+            {
+                Console.WriteLine($"{index++}\t{child.Name}");
+            }
+
+            foreach (DirectoryItem child in folder.Channels)
             {
                 Console.WriteLine($"{index++}\t{child.Name}");
             }

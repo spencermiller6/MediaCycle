@@ -38,7 +38,7 @@ namespace MediaCycle.Core
                             Parent = folder
                         };
 
-                        folder.Children.Add(subFolder);
+                        folder.Folders.Add(subFolder);
                         ParseOutline(childNode, subFolder);
                     }
                     else
@@ -49,7 +49,7 @@ namespace MediaCycle.Core
                             Parent = folder
                         };
                         
-                        folder.Children.Add(channel);
+                        folder.Channels.Add(channel);
                     }
                 }
             }
