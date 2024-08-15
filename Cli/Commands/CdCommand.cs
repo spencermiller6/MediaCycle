@@ -22,7 +22,6 @@ public class CdCommand : Command
     public RssFolder ParsePath()
     {
         RssFolder pwd = Cli.Pwd;
-        // string path = "~/Sports - All/../Technology";
         string path = Arguments[0];
         string[] directories = path.Split(['/']);
 

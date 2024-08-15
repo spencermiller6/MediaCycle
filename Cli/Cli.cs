@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using MediaCycle.Core;
 
 namespace MediaCycle.Cli;
@@ -32,12 +33,20 @@ public static class Cli
         List<string> longOptions = new List<string>();
         List<string> arguments = new List<string>();
 
-        string[] words = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-        name = words[0];
-
-        for (int i = 1; i < words.Length; i++)
+        List<string> tokens = new List<string>();
+        string pattern = @"[\""].+?[\""]|\S+";
+        
+        foreach (Match match in Regex.Matches(input, pattern))
         {
-            string word = words[i];
+            string value = match.Value.Trim('"');
+            tokens.Add(value);
+        }
+
+        name = tokens[0];
+
+        for (int i = 1; i < tokens.Count; i++)
+        {
+            string word = tokens[i];
 
             if (word.StartsWith("--"))
             {
