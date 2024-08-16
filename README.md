@@ -24,6 +24,8 @@ Now:
 - [x] Reorganize classes/namespaces because they are very goofy currently
 - [ ] Support for config
   - [ ] Options for what properties are shown when displaying a list of folders, sources, or articles
+  - [ ] 'config' command that opens config file
+- [ ] Implement -h and other options for commands
 - [x] Proper CLI features / navigation
   - [x] Ability to edit/remove/rename a portion of your OPML
   - [x] Open a folder to view contents vs. open a folder and view the aggregated feed
