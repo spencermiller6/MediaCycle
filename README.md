@@ -16,7 +16,7 @@ Now:
 - [ ] Context-aware auto-completion
 - [ ] Ability to pass in a path as feed argument
 - [ ] Support for relative navigation by index
-- [ ] Some light consistency improvements, refactoring, warning fixes
+- [ ] Some light consistency improvements, refactoring, warning fixes, commenting
 - [ ] More commands
   - [ ] Command for opening an article
     - [ ] In new tab
