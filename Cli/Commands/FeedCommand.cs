@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 using System.ServiceModel.Syndication;
 using MediaCycle.Core;
 
-namespace MediaCycle.Cli;
+namespace MediaCycle.Cli.Commands;
 
 public class FeedCommand : Command
 {

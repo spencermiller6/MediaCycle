@@ -74,6 +74,17 @@ namespace MediaCycle.Core
 
             return _root;
         }
+
+        public string ToPath()
+        {
+            string path = Name;
+            if (Parent is not null)
+            {
+                path = $"{Parent.ToPath()}/{path}";
+            }
+
+            return path;
+        }
     }
 
     public abstract class DirectoryItem

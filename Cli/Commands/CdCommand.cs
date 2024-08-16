@@ -1,7 +1,7 @@
 using System;
 using MediaCycle.Core;
 
-namespace MediaCycle.Cli;
+namespace MediaCycle.Cli.Commands;
 
 public class CdCommand : Command
 {

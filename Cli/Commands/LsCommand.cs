@@ -1,7 +1,7 @@
 using System.ServiceModel.Syndication;
 using MediaCycle.Core;
 
-namespace MediaCycle.Cli;
+namespace MediaCycle.Cli.Commands;
 
 public class LsCommand : Command
 {
