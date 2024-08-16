@@ -11,6 +11,9 @@ Queued media could be delivered via email, or perhaps through some sort of priva
 
 ## ToDo
 
+Now:
+
+- [ ] Context-aware auto-completion
 - [ ] Ability to pass in a path as feed argument
 - [ ] Support for relative navigation by index
 - [ ] Some light consistency improvements, refactoring, warning fixes
@@ -24,6 +27,9 @@ Queued media could be delivered via email, or perhaps through some sort of priva
 - [x] Proper CLI features / navigation
   - [x] Ability to edit/remove/rename a portion of your OPML
   - [x] Open a folder to view contents vs. open a folder and view the aggregated feed
+     
+Later:
+
 - [ ] Tracking metrics
   - [ ] Article viewed status, settable from a directory level
   - [ ] Like/dislike
