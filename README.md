@@ -11,12 +11,19 @@ Queued media could be delivered via email, or perhaps through some sort of priva
 
 ## ToDo
 
-- [ ] Reorganize classes/namespaces because they are very goofy currently
+- [ ] Ability to pass in a path as feed argument
+- [ ] Support for relative navigation by index
+- [ ] Some light consistency improvements, refactoring, warning fixes
+- [ ] Command for opening an article
+  - [ ] In new tab
+  - [ ] As text
+- [ ] Make release time functionality more intuitive (sort by release time? only show x latest release times?)
+- [x] Reorganize classes/namespaces because they are very goofy currently
 - [ ] Support for config
   - [ ] Options for what properties are shown when displaying a list of folders, sources, or articles
-- [ ] Proper CLI features / navigation
-  - [ ] Ability to edit/remove/rename a portion of your OPML
-  - [ ] Open a folder to view contents vs. open a folder and view the aggregated feed
+- [x] Proper CLI features / navigation
+  - [x] Ability to edit/remove/rename a portion of your OPML
+  - [x] Open a folder to view contents vs. open a folder and view the aggregated feed
 - [ ] Tracking metrics
   - [ ] Article viewed status, settable from a directory level
   - [ ] Like/dislike
@@ -24,5 +31,4 @@ Queued media could be delivered via email, or perhaps through some sort of priva
   - [ ] Can be turned off in settings/config
 - [ ] Support/donation
   - [ ] Performing one-time or setting recurring reminders to donate to your favorite creaters/sources, payouts/ratios could be suggested per metrics
-- [ ] Website mode vs. reader mode
 - [ ] Offline support
