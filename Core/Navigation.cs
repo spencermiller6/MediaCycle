@@ -28,17 +28,24 @@ namespace MediaCycle.Core
 
         public void FetchRssFeed()
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                HttpResponseMessage response = client.GetAsync(Url).Result;
-                response.EnsureSuccessStatusCode();
-
-                string responseBody = response.Content.ReadAsStringAsync().Result;
-                using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
+                using (HttpClient client = new HttpClient())
                 {
-                    LastFetch = DateTime.Now;
-                    _feed = SyndicationFeed.Load(reader);
+                    HttpResponseMessage response = client.GetAsync(Url).Result;
+                    response.EnsureSuccessStatusCode();
+
+                    string responseBody = response.Content.ReadAsStringAsync().Result;
+                    using (XmlReader reader = XmlReader.Create(new System.IO.StringReader(responseBody)))
+                    {
+                        LastFetch = DateTime.Now;
+                        _feed = SyndicationFeed.Load(reader);
+                    }
                 }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine($"Unable to fetch feed '{Name}'");
             }
         }
 
