@@ -17,14 +17,16 @@ Now:
 - [ ] Ability to pass in a path as feed argument
 - [ ] Support for relative navigation by index
 - [ ] Some light consistency improvements, refactoring, warning fixes
-- [ ] Command for opening an article
-  - [ ] In new tab
-  - [ ] As text
+- [ ] More commands
+  - [ ] Command for opening an article
+    - [ ] In new tab
+    - [ ] As text
+  - [ ] 'config' command that opens config file
+  - [ ] 'subscriptions' command to open subscriptions file
 - [ ] Make release time functionality more intuitive (sort by release time? only show x latest release times?)
 - [x] Reorganize classes/namespaces because they are very goofy currently
 - [ ] Support for config
   - [ ] Options for what properties are shown when displaying a list of folders, sources, or articles
-  - [ ] 'config' command that opens config file
 - [ ] Implement -h and other options for commands
 - [x] Proper CLI features / navigation
   - [x] Ability to edit/remove/rename a portion of your OPML
