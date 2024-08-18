@@ -17,9 +17,12 @@ Now:
 - [ ] Ability to pass in a path as feed argument
 - [ ] Support for relative navigation by index
 - [ ] Some light consistency improvements, refactoring, warning fixes, commenting
+- [ ] Refactor options
+  - [ ] Could be struct? Dict?
+  - [ ] Fix bug with longName
 - [ ] More commands
   - [ ] Command for opening an article
-    - [ ] In new tab
+    - [x] In new tab
     - [ ] As text
   - [ ] 'config' command that opens config file
   - [ ] 'subscriptions' command to open subscriptions file
