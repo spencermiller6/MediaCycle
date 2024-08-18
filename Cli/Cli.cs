@@ -1,3 +1,4 @@
+using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using MediaCycle.Core;
 
@@ -83,6 +84,8 @@ public static class Cli
             _pwd = value;
         }
     }
+
+    public static List<SyndicationItem>? PresentFeed;
 
     private static RssFolder? _pwd;
 }

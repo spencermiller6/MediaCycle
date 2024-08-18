@@ -14,6 +14,8 @@ public class CommandFactory
                 return new FeedCommand(arguments, shortOptions, longOptions);
             case "ls":
                 return new LsCommand(arguments, shortOptions, longOptions);
+            case "open":
+                return new OpenCommand(arguments, shortOptions, longOptions);
             case "pwd":
                 return new PwdCommand(arguments, shortOptions, longOptions);
             default:

@@ -49,6 +49,7 @@ public class FeedCommand : Command
         List<SyndicationItem> filteredFeed = feed.Where(i => i.PublishDate < releaseTime).ToList();
         List<SyndicationItem> sortedFeed = filteredFeed.OrderByDescending(item => item.PublishDate).ToList();
         
+        Cli.PresentFeed = sortedFeed;
         ShowFeed(sortedFeed);
     }
 
