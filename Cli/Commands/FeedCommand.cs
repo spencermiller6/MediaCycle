@@ -15,7 +15,16 @@ public class FeedCommand : Command
     public override List<Option> Options => _options;
 
     private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>();
+    private List<Option> _options = new List<Option>()
+    {
+        new Option()
+        {
+            ShortName = 'a',
+            LongName = "all",
+            HelpText = "Show all details",
+            IsSet = false
+        }
+    };
 
     public FeedCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
     {
@@ -83,19 +92,19 @@ public class FeedCommand : Command
         return feed;
     }
 
-    static void ShowFeed(List<SyndicationItem> feed)
+    public void ShowFeed(List<SyndicationItem> feed)
     {
         int index = 0;
 
         foreach (SyndicationItem item in feed)
         {
-            Console.WriteLine(index++);
-            Console.WriteLine($"Title: {item.Title.Text}");
-            Console.WriteLine($"Published Date: {item.PublishDate}");
-            Console.WriteLine($"Summary: {item.Summary?.Text ?? string.Empty}");
-            Console.WriteLine($"Link: {item.Id}");
-            Console.WriteLine($"Author: {RssChannel.GetAuthors(item)}");
-            Console.WriteLine();
+            Console.WriteLine($"{index++}\t{item.Title.Text}");
+
+            if (Options.FirstOrDefault(o => o.ShortName == 'a').IsSet)
+            {
+                Console.WriteLine($"\t{item.PublishDate}\t{RssChannel.GetAuthors(item)}\t{item.Id}");
+                Console.WriteLine();
+            }
         }
     }
 }

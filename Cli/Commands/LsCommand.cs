@@ -21,21 +21,14 @@ public class LsCommand : Command
 
     public static void ShowFolder(RssFolder folder)
     {
-        int index = 0;
-
-        if (folder.Parent is not null)
-        {
-            Console.WriteLine($"{-1}\t<- {folder.Parent.Name}");
-        }
-
         foreach (DirectoryItem child in folder.Folders)
         {
-            Console.WriteLine($"{index++}\t{child.Name}");
+            Console.WriteLine($"{child.Name}");
         }
 
         foreach (DirectoryItem child in folder.Channels)
         {
-            Console.WriteLine($"{index++}\t{child.Name}");
+            Console.WriteLine($"{child.Name}");
         }
     }
 
