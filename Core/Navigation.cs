@@ -42,20 +42,22 @@ namespace MediaCycle.Core
                         _feed = SyndicationFeed.Load(reader);
                     }
                 }
+
+                _feed.Items = _feed.Items.Where(i => !string.IsNullOrWhiteSpace(i.Title?.Text));
+
+                foreach (SyndicationItem item in _feed.Items)
+                {
+                    if (!item.Authors.Any())
+                    {
+                        item.Authors.Add(new SyndicationPerson());
+                    }
+
+                    item.Authors[0].Name = Name;
+                }
             }
             catch (Exception)
             {
                 Console.WriteLine($"Unable to fetch feed '{Name}'");
-            }
-        }
-
-        public static string GetAuthors(SyndicationItem item)
-        {
-            switch (item.Authors.Count())
-            {
-                case 0: return "";
-                case 1: return item.Authors[0].Name;
-                default: return "Multiple authors";
             }
         }
     }

@@ -62,7 +62,7 @@ public class OpenCommand : Command
             throw new Exception($"'{Arguments[0]}' is not a valid index");
         }
 
-        string url = ParseItemByIndex(index).Id;
+        string url = ParseItemByIndex(index).Links[0].Uri.ToString();
         OpenUrlInBrowser(url);
     }
 }

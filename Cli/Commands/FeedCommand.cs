@@ -102,7 +102,13 @@ public class FeedCommand : Command
 
             if (Options.FirstOrDefault(o => o.ShortName == 'a').IsSet)
             {
-                Console.WriteLine($"\t{item.PublishDate}\t{RssChannel.GetAuthors(item)}\t{item.Id}");
+                Console.WriteLine($"\tPosted by {item.Authors[0].Name} on {item.PublishDate}");
+
+                if (item.Summary is not null)
+                {
+                    Console.WriteLine($"\n\t{item.Summary.Text}\n");
+                }
+
                 Console.WriteLine();
             }
         }
