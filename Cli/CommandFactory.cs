@@ -10,6 +10,8 @@ public class CommandFactory
         {
             case "cd":
                 return new CdCommand(arguments, shortOptions, longOptions);
+            case "connect":
+                return new ConnectCommand(arguments, shortOptions, longOptions);
             case "feed":
                 return new FeedCommand(arguments, shortOptions, longOptions);
             case "ls":

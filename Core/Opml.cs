@@ -1,4 +1,5 @@
 using System.Xml;
+using MediaCycle.Core.ConfigurableFile;
 
 namespace MediaCycle.Core
 {
@@ -52,6 +53,38 @@ namespace MediaCycle.Core
                         folder.Channels.Add(channel);
                     }
                 }
+            }
+        }
+
+        public static void OverwriteXml(string title, List<RssChannel> rssChannels)
+        {
+            string fileName = Path.ChangeExtension(title.ToLower(), "xml");
+            string filePath = Path.Combine(Config.Instance().SubscriptionsFilePath, fileName);
+            using (XmlWriter writer = XmlWriter.Create(filePath, new XmlWriterSettings { Indent = true }))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("opml");
+                writer.WriteAttributeString("version", "1.0");
+
+                writer.WriteStartElement("head");
+                writer.WriteElementString("title", title);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("body");
+                writer.WriteStartElement("outline");
+
+                foreach (RssChannel channel in rssChannels)
+                {
+                    writer.WriteStartElement("outline");
+                    writer.WriteAttributeString("text", channel.Name);
+                    writer.WriteAttributeString("type", "rss");
+                    writer.WriteAttributeString("xmlUrl", channel.Url);
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndElement();
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
             }
         }
     }
