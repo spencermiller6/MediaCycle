@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Argotic.Core" Version="3000.0.5" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.68.0.3513" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
   </ItemGroup>
 

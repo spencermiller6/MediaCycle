@@ -18,6 +18,8 @@ public class CommandFactory
                 return new OpenCommand(arguments, shortOptions, longOptions);
             case "pwd":
                 return new PwdCommand(arguments, shortOptions, longOptions);
+            case "sync":
+                return new SyncCommand(arguments, shortOptions, longOptions);
             default:
                 throw new Exception($"\"{commandName}\" is not a recognized command");
         }
