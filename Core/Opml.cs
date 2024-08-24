@@ -5,7 +5,7 @@ namespace MediaCycle.Core
 {
     public static class Opml
     {
-        public static RssFolder ParseToDirectoryItems(string path)
+        public static RssFolder ParseToDirectoryItems(string path, RssFolder parent)
         {
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
@@ -16,10 +16,12 @@ namespace MediaCycle.Core
                 throw new Exception("Invalid OPML file: missing body element.");
             }
 
-            RssFolder rootFolder = new RssFolder("Root");
-            ParseOutline(bodyNode, rootFolder);
+            string folderName = Path.GetFileNameWithoutExtension(path);
+            RssFolder folder = new RssFolder(folderName, parent);
 
-            return rootFolder;
+            ParseOutline(bodyNode, folder);
+
+            return folder;
         }
 
         private static void ParseOutline(XmlNode node, RssFolder folder)
@@ -28,16 +30,19 @@ namespace MediaCycle.Core
             {
                 if (childNode.Name == "outline")
                 {
-                    string title = childNode.Attributes["title"]?.Value;
+                    string title = childNode.Attributes["text"]?.Value;
+
+                    if (string.IsNullOrEmpty(title))
+                    {
+                        throw new Exception("Missing title in xml element");
+                    }
+
                     string xmlUrl = childNode.Attributes["xmlUrl"]?.Value;
 
                     if (string.IsNullOrEmpty(xmlUrl))
                     {
                         // Folder
-                        RssFolder subFolder = new RssFolder(title)
-                        {
-                            Parent = folder
-                        };
+                        RssFolder subFolder = new RssFolder(title, folder);
 
                         folder.Folders.Add(subFolder);
                         ParseOutline(childNode, subFolder);
@@ -71,7 +76,6 @@ namespace MediaCycle.Core
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("body");
-                writer.WriteStartElement("outline");
 
                 foreach (RssChannel channel in rssChannels)
                 {
@@ -82,7 +86,6 @@ namespace MediaCycle.Core
                     writer.WriteEndElement();
                 }
 
-                writer.WriteEndElement();
                 writer.WriteEndElement();
                 writer.WriteEndDocument();
             }

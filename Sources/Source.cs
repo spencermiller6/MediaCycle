@@ -2,9 +2,9 @@ using MediaCycle.Sync;
 
 namespace MediaCycle.Sources;
 
-public static class Source
+public static class SourceFactory
 {
-    public static ISource GetSource(string sourceName)
+    public static ISource BuildSource(string sourceName)
     {
         switch(sourceName)
         {
@@ -13,5 +13,10 @@ public static class Source
             default:
                 throw new Exception("Invalid argument");
         }
+    }
+
+    public static IEnumerable<ISource> BuildAllSources()
+    {
+        yield return new Youtube();
     }
 }

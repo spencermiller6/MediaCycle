@@ -74,14 +74,52 @@ namespace MediaCycle.Core
             Channels = new List<RssChannel>();
         }
 
+        public RssFolder(string name, RssFolder parent) : this(name)
+        {
+            Parent = parent;
+        }
+
         public static RssFolder Root()
         {
             if (_root == null)
             {
-                _root = Opml.ParseToDirectoryItems(Config.Instance().SubscriptionsFilePath);
+                _root = BuildRootFromSources(Config.Instance().SubscriptionsFilePath);
             }
 
             return _root;
+        }
+
+        public static List<string> GetSources(string folderPath)
+        {
+            if (Directory.Exists(folderPath))
+            {
+                string[] xmlFiles = Directory.GetFiles(folderPath, "*.xml", SearchOption.TopDirectoryOnly);
+                return xmlFiles.ToList();
+            }
+            else
+            {
+                throw new DirectoryNotFoundException($"The specified directory does not exist: {folderPath}");
+            }
+        }
+
+        public static RssFolder BuildRootFromSources(string path)
+        {
+            List<string> filepaths = GetSources(path);
+
+            if (filepaths.Count() == 0)
+            {
+                throw new Exception("No sources found");
+            }
+
+            RssFolder root = new RssFolder("Sources");
+
+            foreach (string filepath in filepaths)
+            {
+                RssFolder folder = Opml.ParseToDirectoryItems(filepath, root);
+                root.Folders.Add(folder);
+            }
+
+            return root;
         }
 
         public string ToPath()

@@ -28,7 +28,7 @@ public class ConnectCommand : Command
 
     public override void Execute()
     {
-        ISource source = Source.GetSource(_arguments[0]);
+        ISource source = SourceFactory.BuildSource(_arguments[0]);
         source.Connect();
     }
 }

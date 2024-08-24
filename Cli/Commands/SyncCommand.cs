@@ -31,13 +31,16 @@ public class SyncCommand : Command
         {
             foreach (string argument in _arguments)
             {
-                ISource source = Source.GetSource(argument);
+                ISource source = SourceFactory.BuildSource(argument);
                 source.Sync();
             }
         }
         else
         {
-            throw new NotImplementedException();
+            foreach (ISource source in SourceFactory.BuildAllSources())
+            {
+                source.Sync();
+            }
         }
     }
 }

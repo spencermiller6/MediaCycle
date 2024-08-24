@@ -12,21 +12,30 @@ namespace MediaCycle.Core.ConfigurableFile
         private Config()
         {
             XDocument configFile = LoadOrCreate();
-            
-            SubscriptionsFilePath = LoadSubscriptionsFilePath(configFile);
+            SubscriptionsFilePath = LoadSourcesFilePath(configFile);
             ReleaseTimes = LoadReleaseTimes(configFile);
         }
 
         public XDocument LoadOrCreate()
         {
             string filePath = Path.Combine(ConfigurableFile.Directory, "config.xml");
+            XDocument configDoc;
 
-            if (!File.Exists(filePath))
+            if (File.Exists(filePath))
             {
-                XDocument doc = new XDocument(new XElement("ReleaseTimes"));
-                doc.Save("config.xml");
+                configDoc = XDocument.Load(filePath);
+            }
+            else
+            {
+                configDoc = new XDocument(new XElement("Config"));
             }
 
+            if (configDoc.Root.Element("ReleaseTimes") == null)
+            {
+                configDoc.Root.Add(new XElement("ReleaseTimes"));
+            }
+
+            configDoc.Save(filePath);
             return XDocument.Load(filePath);
         }
 
@@ -40,7 +49,7 @@ namespace MediaCycle.Core.ConfigurableFile
             return _instance;
         }
 
-        public static string LoadSubscriptionsFilePath(XDocument doc)
+        public static string LoadSourcesFilePath(XDocument doc)
         {
             return doc.Root.Element("SubscriptionsFilePath").Value;
         }
