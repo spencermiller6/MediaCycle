@@ -64,7 +64,7 @@ namespace MediaCycle.Sync
             (
                 s.Snippet.Title,
                 $"https://www.youtube.com/feeds/videos.xml?channel_id={s.Snippet.ResourceId.ChannelId}"
-            )).ToList();
+            )).OrderBy(c => c.Name).ToList();
 
             return rssChannels;
         }
@@ -72,7 +72,7 @@ namespace MediaCycle.Sync
         public void Sync()
         {
             List<RssChannel> rssChannels = GetSubscriptions();
-            Opml.OverwriteXml("youtube", rssChannels);
+            Opml.OverwriteXml("YouTube", rssChannels);
         }
     }
 }

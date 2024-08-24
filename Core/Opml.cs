@@ -10,15 +10,21 @@ namespace MediaCycle.Core
             XmlDocument doc = new XmlDocument();
             doc.Load(path);
 
-            XmlNode bodyNode = doc.SelectSingleNode("/opml/body");
+            XmlNode? titleNode = doc.SelectSingleNode("/opml/head/title");
+            if (titleNode == null)
+            {
+                throw new Exception("Invalid OPML file: missing title element.");
+            }
+
+            string name = titleNode.InnerText;
+
+            XmlNode? bodyNode = doc.SelectSingleNode("/opml/body");
             if (bodyNode == null)
             {
                 throw new Exception("Invalid OPML file: missing body element.");
             }
 
-            string folderName = Path.GetFileNameWithoutExtension(path);
-            RssFolder folder = new RssFolder(folderName, parent);
-
+            RssFolder folder = new RssFolder(name, parent);
             ParseOutline(bodyNode, folder);
 
             return folder;
