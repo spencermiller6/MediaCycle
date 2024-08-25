@@ -6,11 +6,37 @@ namespace MediaCycle.Cli;
 
 public static class Cli
 {
+    private delegate string? InputHandler();
+    private static InputHandler GetUserInput
+    {
+        get
+        {
+            if (_getUserInput is null)
+            {
+                if (Console.IsInputRedirected)
+                {
+                    _getUserInput += Console.ReadLine;
+                }
+                else
+                {
+                    _getUserInput += Input.ReadLineWithTabCompletion;
+                }
+            }
+
+            return _getUserInput;
+        }
+    }
+
+    private static InputHandler? _getUserInput;
+
     public static void Start()
     {
         while(true)
         {
-            string? input = Console.ReadLine();
+            List<string> itemNames = Cli.Pwd.Folders.Select(i => i.Name).ToList();
+            itemNames.AddRange(Cli.Pwd.Channels.Select(i => i.Name).ToList());
+            
+            string? input = GetUserInput();
 
             if (!string.IsNullOrWhiteSpace(input))
             {

@@ -13,6 +13,7 @@ Queued media could be delivered via email, or perhaps through some sort of priva
 
 Now:
 
+- [ ] Decouple core program, CLI infrastructure, and CLI implementation
 - [ ] Context-aware auto-completion
 - [ ] Ability to pass in a path as feed argument
 - [ ] Support for relative navigation by index

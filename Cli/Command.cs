@@ -8,6 +8,9 @@ public abstract class Command
     public abstract string HelpText { get; }
     public abstract int MinArguments { get; }
     public abstract int MaxArguments { get; }
+
+    /* Refactor arguments. The options class should lose its short and longname properties. Command should have an Option object
+    created for each one it supports. It should also have a dict called shortnames and called longnames, both of which map to an Option  */
     public abstract List<string> Arguments { get; }
     public abstract List<Option> Options { get; }
 
