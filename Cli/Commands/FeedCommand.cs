@@ -1,51 +1,44 @@
-using System;
-using System.Collections.Immutable;
+using System.CommandLine;
 using System.ServiceModel.Syndication;
 using MediaCycle.Core;
 
 namespace MediaCycle.Cli.Commands;
 
-public class FeedCommand : Command
+public static class FeedCommand
 {
-    public override string Name => "feed";
-    public override string HelpText => "Show the feed of all channels within the current scope";
-    public override int MinArguments => 0;
-    public override int MaxArguments => 1;
-    public override List<string> Arguments => _arguments;
-    public override List<Option> Options => _options;
-
-    private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>()
+    public static Command Create()
     {
-        new Option()
+        var argument = new Argument<List<string>>("source-name")
         {
-            ShortName = 'a',
-            LongName = "all",
-            HelpText = "Show all details",
-            IsSet = false
-        }
-    };
+            Arity = ArgumentArity.ZeroOrMore
+        };
 
-    public FeedCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
-    {
+        var verboseOption = new Option<bool>(
+            aliases: new string[] { "--verbose", "-v" },
+            description: "Enable verbose output",
+            getDefaultValue: () => false
+        );
+
+        var command = new Command("feed", "Show the feed of all channels within the current scope")
+        {
+            argument
+        };
+
+        command.SetHandler(Execute, argument, verboseOption);
+
+        return command;
     }
 
-    public override void SetArguments(List<string> arguments)
-    {
-        base.SetArguments(arguments);
-        _arguments = arguments;
-    }
-
-    public override void Execute()
+    private static void Execute(List<string> sourceNames, bool verbose)
     {
         List<SyndicationItem> feed;
 
-        if (Arguments.Any())
+        if (sourceNames.Any())
         {
             feed = new List<SyndicationItem>();
-            foreach (string argument in Arguments)
+            foreach (string sourceName in sourceNames)
             {
-                RssChannel channel = GetChannelFromString(argument);
+                RssChannel channel = GetChannelFromString(sourceName);
                 feed.AddRange(channel.Feed().Items);
             }
         }
@@ -59,10 +52,10 @@ public class FeedCommand : Command
         List<SyndicationItem> sortedFeed = filteredFeed.OrderByDescending(item => item.PublishDate).ToList();
         
         Cli.PresentFeed = sortedFeed;
-        ShowFeed(sortedFeed);
+        ShowFeed(sortedFeed, verbose);
     }
 
-    static RssChannel GetChannelFromString(string channelName)
+    private static RssChannel GetChannelFromString(string channelName)
     {
         RssChannel? channel = Cli.Pwd.Channels.FirstOrDefault(c => c.Name == channelName);
 
@@ -76,7 +69,7 @@ public class FeedCommand : Command
         }
     }
         
-    static List<SyndicationItem> GetFeedsFromFolder(RssFolder parentFolder)
+    private static List<SyndicationItem> GetFeedsFromFolder(RssFolder parentFolder)
     {
         List<SyndicationItem> feed = new List<SyndicationItem>();
 
@@ -92,7 +85,7 @@ public class FeedCommand : Command
         return feed;
     }
 
-    public void ShowFeed(List<SyndicationItem> feed)
+    private static void ShowFeed(List<SyndicationItem> feed, bool verbose)
     {
         int index = 0;
 
@@ -100,7 +93,7 @@ public class FeedCommand : Command
         {
             Console.WriteLine($"{index++}\t{item.Title.Text}");
 
-            if (Options.FirstOrDefault(o => o.ShortName == 'a').IsSet)
+            if (verbose)
             {
                 Console.WriteLine($"\tPosted by {item.Authors[0].Name} on {item.PublishDate}");
 

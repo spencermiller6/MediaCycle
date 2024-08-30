@@ -27,7 +27,7 @@ public static class CdCommand
         Cli.Pwd = ParsePath(path);
     }
 
-    public static RssFolder ParsePath(string path)
+    private static RssFolder ParsePath(string path)
     {
         RssFolder pwd = Cli.Pwd;
         string[] directories = path.Split(['/']);
