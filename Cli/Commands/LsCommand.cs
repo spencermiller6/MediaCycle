@@ -1,22 +1,17 @@
-using System.ServiceModel.Syndication;
+using System.CommandLine;
 using MediaCycle.Core;
 
 namespace MediaCycle.Cli.Commands;
 
-public class LsCommand : Command
+public static class LsCommand
 {
-    public override string Name => "ls";
-    public override string HelpText => "Show the contents of the present working directory";
-    public override int MinArguments => 0;
-    public override int MaxArguments => 0;
-    public override List<string> Arguments => _arguments;
-    public override List<Option> Options => _options;
-
-    private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>();
-
-    public LsCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
+    public static Command Create()
     {
+        var command = new Command("ls", "Show the contents of the present working directory");
+
+        command.SetHandler(Execute);
+
+        return command;
     }
 
     public static void ShowFolder(RssFolder folder)
@@ -32,7 +27,7 @@ public class LsCommand : Command
         }
     }
 
-    public override void Execute()
+    public static void Execute()
     {
         ShowFolder(Cli.Pwd);
     }

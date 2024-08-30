@@ -1,31 +1,29 @@
+using System.CommandLine;
 using System.Diagnostics;
 using System.ServiceModel.Syndication;
 
 namespace MediaCycle.Cli.Commands;
 
-public class OpenCommand : Command
+public static class OpenCommand
 {
-    public override string Name => "open";
-    public override string HelpText => "Open an item in the browser";
-    public override int MinArguments => 1;
-    public override int MaxArguments => 1;
-    public override List<string> Arguments => _arguments;
-    public override List<Option> Options => _options;
-
-    private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>();
-
-    public OpenCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
+    public static Command Create()
     {
+        var argument = new Argument<int>("item-index")
+        {
+            Arity = ArgumentArity.ExactlyOne
+        };
+
+        var command = new Command("open", "Open an item in the browser")
+        {
+            argument
+        };
+
+        command.SetHandler(Execute, argument);
+
+        return command;
     }
 
-    public override void SetArguments(List<string> arguments)
-    {
-        base.SetArguments(arguments);
-        _arguments = arguments;
-    }
-
-    public SyndicationItem ParseItemByIndex(int index)
+    public static SyndicationItem ParseItemByIndex(int index)
     {
         if (Cli.PresentFeed is null)
         {
@@ -33,13 +31,13 @@ public class OpenCommand : Command
         }
         if (index < 0 || index > Cli.PresentFeed.Count)
         {
-            throw new Exception($"'{Arguments[0]}' is not a valid index");
+            throw new Exception($"'{index}' is not a valid index");
         }
 
         return Cli.PresentFeed[index];
     }
 
-    public void OpenUrlInBrowser(string url)
+    public static void OpenUrlInBrowser(string url)
     {
         try
         {
@@ -55,14 +53,9 @@ public class OpenCommand : Command
         }
     }
 
-    public override void Execute()
+    public static void Execute(int itemIndex)
     {
-        if (!int.TryParse(Arguments[0], out int index))
-        {
-            throw new Exception($"'{Arguments[0]}' is not a valid index");
-        }
-
-        string url = ParseItemByIndex(index).Links[0].Uri.ToString();
+        string url = ParseItemByIndex(itemIndex).Links[0].Uri.ToString();
         OpenUrlInBrowser(url);
     }
 }

@@ -21,7 +21,8 @@ public static class FeedCommand
 
         var command = new Command("feed", "Show the feed of all channels within the current scope")
         {
-            argument
+            argument,
+            verboseOption
         };
 
         command.SetHandler(Execute, argument, verboseOption);

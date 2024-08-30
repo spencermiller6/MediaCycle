@@ -1,26 +1,19 @@
-using System;
+using System.CommandLine;
 
 namespace MediaCycle.Cli.Commands;
 
-public class PwdCommand : Command
+public static class PwdCommand
 {
-    public override string Name => "pwd";
-    public override string HelpText => "Show the present working directory";
-    public override int MinArguments => 0;
-    public override int MaxArguments => 0;
-    public override List<string> Arguments => _arguments;
-    public override List<Option> Options => _options;
-
-    private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>();
-
-    
-
-    public PwdCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
+    public static Command Create()
     {
+        var command = new Command("pwd", "Show the present working directory");
+
+        command.SetHandler(Execute);
+
+        return command;
     }
 
-    public override void Execute()
+    public static void Execute()
     {
         string path = Cli.Pwd.ToPath();
         Console.WriteLine(path);

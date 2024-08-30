@@ -1,37 +1,34 @@
+using System.CommandLine;
 using MediaCycle.Sources;
-using MediaCycle.Sync;
 
 namespace MediaCycle.Cli.Commands;
 
-public class SyncCommand : Command
+public static class SyncCommand
 {
-    public SyncCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
+    public static Command Create()
     {
-    }
-
-    public override string Name => "sync";
-    public override string HelpText => "Sync with your sources";
-    public override int MinArguments => 0;
-    public override int MaxArguments => int.MaxValue;
-    public override List<string> Arguments => _arguments;
-    public override List<Option> Options => _options;
-
-    private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>();
-
-    public override void SetArguments(List<string> arguments)
-    {
-        base.SetArguments(arguments);
-        _arguments = arguments;
-    }
-
-    public override void Execute()
-    {
-        if (_arguments.Any())
+        var argument = new Argument<List<string>>("source-name")
         {
-            foreach (string argument in _arguments)
+            Arity = ArgumentArity.ZeroOrMore
+        };
+
+        var command = new Command("sync", "Sync with your sources")
+        {
+            argument
+        };
+
+        command.SetHandler(Execute, argument);
+
+        return command;
+    }
+
+    public static void Execute(List<string> sourceNames)
+    {
+        if (sourceNames.Any())
+        {
+            foreach (string sourceName in sourceNames)
             {
-                ISource source = SourceFactory.BuildSource(argument);
+                ISource source = SourceFactory.BuildSource(sourceName);
                 source.Sync();
             }
         }
