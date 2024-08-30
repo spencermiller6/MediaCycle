@@ -1,28 +1,35 @@
-using System;
+using System.CommandLine;
 using MediaCycle.Core;
 
 namespace MediaCycle.Cli.Commands;
 
-public class CdCommand : Command
+public static class CdCommand
 {
-    public override string Name => "cd";
-    public override string HelpText => "Change the directory";
-    public override int MinArguments => 1;
-    public override int MaxArguments => 1;
-    public override List<string> Arguments => _arguments;
-    public override List<Option> Options => _options;
-
-    private List<string> _arguments = new List<string>();
-    private List<Option> _options = new List<Option>();
-
-    public CdCommand(List<string> arguments, List<char> shortOptions, List<string> longOptions) : base(arguments, shortOptions, longOptions)
+    public static Command Create()
     {
+        var argument = new Argument<string>("path")
+        {
+            Arity = ArgumentArity.ExactlyOne
+        };
+
+        var command = new Command("cd", "Change the directory")
+        {
+            argument
+        };
+
+        command.SetHandler(Execute, argument);
+
+        return command;
     }
 
-    public RssFolder ParsePath()
+    private static void Execute(string path)
+    {
+        Cli.Pwd = ParsePath(path);
+    }
+
+    public static RssFolder ParsePath(string path)
     {
         RssFolder pwd = Cli.Pwd;
-        string path = Arguments[0];
         string[] directories = path.Split(['/']);
 
         for (int i = 0; i < directories.Length; i ++)
@@ -46,7 +53,7 @@ public class CdCommand : Command
 
                     if (folder is null)
                     {
-                        throw new Exception($"{Name}: {path}: No such directory");
+                        throw new Exception($"{path}: No such directory");
                     }
                     else
                     {
@@ -58,16 +65,5 @@ public class CdCommand : Command
         }
 
         return pwd;
-    }
-
-    public override void SetArguments(List<string> arguments)
-    {
-        base.SetArguments(arguments);
-        _arguments = arguments;
-    }
-
-    public override void Execute()
-    {
-        Cli.Pwd = ParsePath();
     }
 }
