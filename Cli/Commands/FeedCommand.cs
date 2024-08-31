@@ -13,6 +13,11 @@ public static class FeedCommand
             Arity = ArgumentArity.ZeroOrMore
         };
 
+        argument.AddCompletions((completionContext) =>
+        {
+            return Cli.Completions;
+        });
+
         var verboseOption = new Option<bool>(
             aliases: new string[] { "--verbose", "-v" },
             description: "Enable verbose output",
