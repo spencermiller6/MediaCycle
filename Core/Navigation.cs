@@ -79,14 +79,17 @@ namespace MediaCycle.Core
             Parent = parent;
         }
 
-        public static RssFolder Root()
+        public static RssFolder Root
         {
-            if (_root == null)
+            get
             {
-                _root = BuildRootFromSources(Config.Instance().SubscriptionsFilePath);
-            }
+                if (_root == null)
+                {
+                    _root = BuildRootFromSources(Config.Instance().SubscriptionsFilePath);
+                }
 
-            return _root;
+                return _root;
+            }
         }
 
         public static List<string> GetSources(string folderPath)

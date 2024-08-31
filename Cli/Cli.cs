@@ -1,4 +1,3 @@
-using System.CommandLine.Completions;
 using System.ServiceModel.Syndication;
 using MediaCycle.Core;
 
@@ -6,22 +5,6 @@ namespace MediaCycle.Cli;
 
 public static class Cli
 {
-    public static RssFolder Pwd
-    {
-        get
-        {
-            if (_pwd is null)
-            {
-                _pwd = RssFolder.Root;
-            }
-            return _pwd;
-        }
-        set
-        {
-            _pwd = value;
-        }
-    }
-
     public static string[] Completions
     {
         get
@@ -68,5 +51,4 @@ public static class Cli
     private static string[]? _completions;
     private static Dictionary<string, DirectoryItem> _folderDictionary = new Dictionary<string, DirectoryItem>();
     public static List<SyndicationItem>? PresentFeed;
-    private static RssFolder? _pwd;
 }
