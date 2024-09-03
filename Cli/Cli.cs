@@ -11,34 +11,32 @@ public static class Cli
         {
             if (_completions is null)
             {
-                _completions = FolderDictionary.Keys.ToArray();
+                _completions = ChannelDictionary.Keys.ToArray();
             }
 
             return _completions;
         }
     }
 
-    public static Dictionary<string, DirectoryItem> FolderDictionary
+    public static Dictionary<string, RssChannel> ChannelDictionary
     {
         get
         {
             if (!_folderDictionary.Any())
             {
-                CreatePathDictionaries(RssFolder.Root, RssFolder.Root.ToPath());
+                AddToChannelDictionary(RssFolder.Root, RssFolder.Root.ToPath());
             }
 
             return _folderDictionary;
         }
     }
 
-    private static void CreatePathDictionaries(RssFolder parentFolder, string parentPath)
+    private static void AddToChannelDictionary(RssFolder parentFolder, string parentPath)
     {
-        _folderDictionary.Add(parentPath, parentFolder);
-
         foreach (RssFolder folder in parentFolder.Folders)
         {
             string childPath = Path.Combine(parentPath, folder.Name);
-            CreatePathDictionaries(folder, childPath);
+            AddToChannelDictionary(folder, childPath);
         }
 
         foreach (RssChannel channel in parentFolder.Channels)
@@ -49,6 +47,6 @@ public static class Cli
     }
 
     private static string[]? _completions;
-    private static Dictionary<string, DirectoryItem> _folderDictionary = new Dictionary<string, DirectoryItem>();
+    private static Dictionary<string, RssChannel> _folderDictionary = new Dictionary<string, RssChannel>();
     public static List<SyndicationItem>? PresentFeed;
 }

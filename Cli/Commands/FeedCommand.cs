@@ -35,22 +35,38 @@ public static class FeedCommand
         return command;
     }
 
+    private static IEnumerable<SyndicationItem> GetFeedFromSourceNames(string sourceName)
+    {
+        Cli.ChannelDictionary.TryGetValue(sourceName, out RssChannel? channel);
+
+        if (channel is null)
+        {
+            throw new Exception($"'{sourceName}' is not a valid channel");
+        }
+
+        SyndicationFeed feed = channel.Feed();
+        return feed.Items;
+    }
+
     private static void Execute(List<string> sourceNames, bool verbose)
     {
-        List<SyndicationItem> feed;
+        List<SyndicationItem> feed = new List<SyndicationItem>();
 
         if (sourceNames.Any())
         {
-            feed = new List<SyndicationItem>();
             foreach (string sourceName in sourceNames)
             {
-                RssChannel channel = GetChannelFromString(sourceName);
-                feed.AddRange(channel.Feed().Items);
+                IEnumerable<SyndicationItem> items = GetFeedFromSourceNames(sourceName);
+                feed.AddRange(items);
             }
         }
         else
         {
-            feed = GetFeedsFromFolder(Cli.Pwd);
+            foreach (RssChannel channel in Cli.ChannelDictionary.Values)
+            {
+                IEnumerable<SyndicationItem> items = channel.Feed().Items;
+                feed.AddRange(items);
+            }
         }
 
         DateTime? releaseTime = ReleaseTime.NextReleaseTime();
@@ -59,36 +75,6 @@ public static class FeedCommand
         
         Cli.PresentFeed = sortedFeed;
         ShowFeed(sortedFeed, verbose);
-    }
-
-    private static RssChannel GetChannelFromString(string channelName)
-    {
-        RssChannel? channel = Cli.Pwd.Channels.FirstOrDefault(c => c.Name == channelName);
-
-        if(channel is null)
-        {
-            throw new Exception($"{channelName}: No such directory");
-        }
-        else
-        {
-            return channel;
-        }
-    }
-        
-    private static List<SyndicationItem> GetFeedsFromFolder(RssFolder parentFolder)
-    {
-        List<SyndicationItem> feed = new List<SyndicationItem>();
-
-        foreach (RssFolder childFolder in parentFolder.Folders)
-        {
-            feed.AddRange(GetFeedsFromFolder(childFolder));
-        }
-        foreach (RssChannel channel in parentFolder.Channels)
-        {
-            feed.AddRange(channel.Feed().Items);
-        }
-
-        return feed;
     }
 
     private static void ShowFeed(List<SyndicationItem> feed, bool verbose)
